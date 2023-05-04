@@ -1,28 +1,31 @@
 // explore.js
 
 window.addEventListener('DOMContentLoaded', init);
+
 function init() {
 
+  const synth = window.speechSynthesis;
+
+  synth.addEventListener('voiceschanged', loadVoices);
 
   // puts all the available voices into a list
   function loadVoices() {
   
-    var voiceList = speechSynthesis.getVoices();
+    var voiceList = synth.getVoices();
   
     for (let i = 0; i < voiceList.length; i++) {
 
       const option = document.createElement("option");
       option.textContent = `${voiceList[i].name} (${voiceList[i].lang})`;
-  
-      option.setAttribute("data-lang", voiceList[i].lang);
-      option.setAttribute("data-name", voiceList[i].name);
-      document.getElementById("voice-select").appendChild(option);
+      option.setAttribute('value', i);
+      // option.setAttribute("data-lang", voiceList[i].lang);
+      // option.setAttribute("data-name", voiceList[i].name);
+      selectElem.appendChild(option);
     }
+    // voiceList.forEach(v => console.log(v));
   }
   
-  //loadVoices();
-
-  speechSynthesis.addEventListener('voiceschanged', loadVoices);
+  loadVoices();
 
   //speechSynthesis.onvoiceschanged = loadVoices;
 
@@ -32,33 +35,22 @@ function init() {
   //   speechSynthesis.onvoiceschanged = loadVoices;
   // }
 
+  const selectElem = document.getElementById('voice-select');
+  const textInput = document.getElementById('text-to-speak');
 
   // press to talk button
-
   let btn = document.querySelector("button");
   btn.addEventListener("click", speak);
 
-
   function speak() {
 
-    var voiceListTwo = speechSynthesis.getVoices();
+    const toSay = new SpeechSynthesisUtterance(textInput.value);
 
-    let textTyped = document.querySelector("textarea").value;
-    const toSay = new SpeechSynthesisUtterance(textTyped);
+    const voices = synth.getVoices();
+    const chosenVoice = voices[selectElem.value];
+    toSay.voice = chosenVoice;
 
-    let selectedVoice = document.getElementById("voice-select").value;
-
-
-    for (let i = 0; i < voiceListTwo.length; i++) {
-      // this if statement doesn't work
-      if (voiceListTwo[i] == selectedVoice) {
-        alert("found it");
-        toSay.voice = voiceListTwo[i];
-      }
-    }
-
-    toSay.voice = voiceListTwo[10];
-    speechSynthesis.speak(toSay);
+    synth.speak(toSay);
 
     toSay.onstart = function () {
       document.querySelector("img").src = "assets/images/smiling-open.png";
@@ -67,9 +59,7 @@ function init() {
     toSay.onend = function () {
       document.querySelector("img").src = "assets/images/smiling.png";
     }
-
   }
-
 
 
 }

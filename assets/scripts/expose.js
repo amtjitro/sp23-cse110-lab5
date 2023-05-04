@@ -11,6 +11,8 @@ window.addEventListener('DOMContentLoaded', init);
 
 function init() {
 
+  const jsConfetti = new JSConfetti();
+
   // set correct images
   let selectElement = document.getElementById("horn-select");
   selectElement.addEventListener("change", displayImage);
@@ -57,13 +59,15 @@ function init() {
       volumeImageElement.src = "assets/icons/volume-level-3.svg";
     }
 
-    // set to correct volume
-    if (volumeLevelValue == 1.0){
-      volumeLevelValue = 1.0;
-    } else {
-      var volumeLevelValue = parseFloat("0." + volumeLevel);
-    }
-    hornAudio.volume = volumeLevelValue;
+    // // set to correct volume
+    // if (volumeLevelValue == 1.0){
+    //   volumeLevelValue = 1.0;
+    // } else {
+    //   // var volumeLevelValue = parseFloat("0." + volumeLevel);
+    //   var volumeLevelValue = volumeLevel/100;
+    // }
+
+    hornAudio.volume = volumeLevel/100;
 
   }
 
@@ -77,9 +81,6 @@ function init() {
     //confetti
     if (selectElement.value == "party-horn") {
 
-      const canvas = document.createElement("canvas");
-
-      const jsConfetti = new JSConfetti({canvas});
       jsConfetti.addConfetti()
     }
 
